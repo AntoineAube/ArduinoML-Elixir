@@ -1,3 +1,3 @@
 defmodule ArduinoML.Transition do
-  defstruct from: nil, to: nil, on: nil
+  defstruct from: nil, to: nil, on: []
 end

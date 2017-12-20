@@ -40,12 +40,16 @@ defmodule ArduinoML do
     %Application{app | initial: label}
   end
 
-  def transition(app, [from: from, to: to, on: assertion]) do
-    transition = %Transition{from: from, to: to, on: assertion}
+  def transition(app, [from: from, to: to, on: assertion]) when is_map(assertion) do
+    transition(app, [from: from, to: to, on: [assertion]])
+  end
+
+  def transition(app, [from: from, to: to, on: assertions]) when is_list(assertions) do
+    transition = %Transition{from: from, to: to, on: assertions}
 
     %Application{app | transitions: [transition | app.transitions]}
   end
-
+  
   def a ~> b, do: %Action{label: a, signal: b}
   
   def a <~> b, do: %Assertion{label: a, signal: b}
