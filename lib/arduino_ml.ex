@@ -58,7 +58,7 @@ defmodule ArduinoML do
   def is_low?(label), do: label <~> :low
 
   def to_code(app) do
-    ArduinoML.Transpiler.to_code(app)
+    ArduinoML.CodeProducer.to_code(app)
   end
   
 end
