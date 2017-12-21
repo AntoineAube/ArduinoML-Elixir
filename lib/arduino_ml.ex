@@ -114,8 +114,21 @@ defmodule ArduinoML do
     transition = %Transition{from: from, to: to, on: conditions}
 
     Agent.update(__MODULE__, fn app -> Application.with_transition(app, transition) end)
+
+	:ok
   end
 
+  @doc """
+  Setup the delay between each transition inside the application.
+  """
+  def frequency(frequency, :herz) when is_number(frequency) do
+	delay = 1000 / frequency
+
+	Agent.update(__MODULE__, fn app -> Application.with_delay(app, delay) end)
+
+	:ok
+  end
+  
   @doc """
   Validates the described application. Will raise errors if it is not valid.
   """
