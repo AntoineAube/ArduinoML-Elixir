@@ -11,22 +11,37 @@ defmodule ArduinoML.Application do
     transitions: [],
     initial: nil
 
+  @doc """
+  Adds a sensor to the given application.
+  """
   def with_sensor(app, sensor = %Brick{}) do
     %ArduinoML.Application{app | sensors: [sensor | app.sensors]}
   end
 
+  @doc """
+  Adds an actuator to the given application.
+  """
   def with_actuator(app, actuator = %Brick{}) do
     %ArduinoML.Application{app | actuators: [actuator | app.actuators]}
   end
 
+  @doc """
+  Adds a state to the given application.
+  """
   def with_state(app, state = %State{}) do
     %ArduinoML.Application{app | states: [state | app.states]}
   end
 
+  @doc """
+  Adds a transition to the given application.
+  """
   def with_transition(app, transition = %Transition{}) do
     %ArduinoML.Application{app | transitions: [transition | app.transitions]}
   end
 
+  @doc """
+  Setup the initial state of the given application.
+  """
   def with_initial(app, label) do
     %ArduinoML.Application{app | initial: label}
   end
