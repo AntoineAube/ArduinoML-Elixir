@@ -182,8 +182,7 @@ defmodule ArduinoML do
   end
 
   defp validate_application(app) do
-    # TODO Implement the validation.
-    :ok
+    ArduinoML.ModelValidator.validate(app)
   end
   
 end
