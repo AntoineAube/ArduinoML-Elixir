@@ -163,10 +163,10 @@ defmodule ArduinoML do
   Translates the described application into C Arduino code.
   """
   def to_code! do
-    case validate!() do
-      :ok -> application!() |> CodeProducer.to_code
-      :error -> "// The structure presents defects. The code cannot be generated."
-    end
+    validate!()
+
+    application!()
+    |> CodeProducer.to_code
   end
 
   @doc """
@@ -178,7 +178,7 @@ defmodule ArduinoML do
   end
 
   def application! do
-    Agent.get(__MODULE__, fn app -> app end)
+    Agent.get(__MODULE__, &(&1))
   end
 
   defp validate_application(app) do

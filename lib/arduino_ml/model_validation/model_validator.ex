@@ -2,6 +2,9 @@ defmodule ArduinoML.ModelValidator do
 
   alias ArduinoML.Application, as: Application
 
+  @doc """
+  Validates the given application. If it does not comply, then an exception is raised.
+  """
   def validate(app = %Application{}) do
     bricks = app.sensors ++ app.actuators
     
