@@ -14,7 +14,7 @@ defmodule ArduinoML.CodeProducer do
     
     // Setup the inputs and outputs.
     void setup() {
-    #{sensors |> Enum.map(fn s -> "  " <> brick_setup(s, :input) end) |> Enum.join("\n")}
+    #{sensors |> Enum.map(fn s -> "  " <> brick_setup(s, :input) end) |> Enum.join("")}
 
     #{actuators |> Enum.map(fn s -> "  " <> brick_setup(s, :output) end) |> Enum.join("\n")}
     }
@@ -44,7 +44,7 @@ defmodule ArduinoML.CodeProducer do
     #{actions |> Enum.map(&action_declaration/1) |> Enum.map(&("  " <> &1)) |> Enum.join("\n")}
     
       boolean guard = millis() - time > debounce;
-      
+    
     #{transitions_declaration(relevant_transitions)} else {
         #{state_function_name(label)}();
       }
@@ -86,11 +86,9 @@ defmodule ArduinoML.CodeProducer do
   end
 
   defp loop_function(app) do
-    """
-    void loop() {
-      #{app |> Application.initial |> state_function_name}();
-    }
-    """
+    "void loop() {\n" <>
+    "  #{app |> Application.initial |> state_function_name}();\n" <>
+    "}"
   end
 
   defp state_function_name(label), do: "state_" <> state_label(label)
