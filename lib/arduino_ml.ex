@@ -45,6 +45,14 @@ defmodule ArduinoML do
   end
 
   @doc """
+  Adds a state to the state machien inside the application.
+  This version adds a state without "on entry" action.
+  """
+  def state(label) do
+    state(label, on_entry: [])
+  end
+  
+  @doc """
   Adds a state to the state machine inside the application.
   This version adds a state with only one "on entry" action.
   """
@@ -65,7 +73,7 @@ defmodule ArduinoML do
   end
 
   @doc """
-  Setup the initial state of the inner state machine of the application.
+  Set up the initial state of the inner state machine of the application.
   If this is not used, the initial state is the first declared state.
   """
   def initial(label) do
@@ -77,17 +85,31 @@ defmodule ArduinoML do
   @doc """
   Builds an action "set the actuator to the given signal".
   """
-  def actuator ~> signal when is_atom(actuator) and is_atom(signal) do
+  def actuator ~> signal do
     %Action{actuator_label: actuator, signal: signal}
   end
 
   @doc """
   Builds an assertion "is the sensor at the given signal?".
   """
-  def sensor <~> signal when is_atom(sensor) and is_atom(signal) do
+  def sensor <~> signal do
     %Assertion{sensor_label: sensor, signal: signal}
   end
 
+  @doc """
+  Builds an array of assertions from two assertions.
+  """
+  def (assertion = %Assertion{}) &&& (another_one = %Assertion{}) do
+    [assertion, another_one]
+  end
+
+  @doc """
+  Add an assertion to an existing array.
+  """
+  def assertions &&& (assertion = %Assertion{}) when is_list(assertions) do
+    assertions ++ [assertion]
+  end
+    
   @doc """
   Builds an assertion "is the sensor at HIGH signal?".
   """
@@ -115,25 +137,25 @@ defmodule ArduinoML do
 
     Agent.update(__MODULE__, fn app -> Application.with_transition(app, transition) end)
 
-	:ok
+    :ok
   end
 
   @doc """
   Setup the delay between each transition inside the application.
   """
   def frequency(frequency, :herz) when is_number(frequency) do
-	delay = 1000 / frequency
+    delay = 1000 / frequency
 
-	Agent.update(__MODULE__, fn app -> Application.with_delay(app, delay) end)
+    Agent.update(__MODULE__, fn app -> Application.with_delay(app, delay) end)
 
-	:ok
+    :ok
   end
   
   @doc """
   Validates the described application. Will raise errors if it is not valid.
   """
   def validate! do
-    get_application()
+    application!()
     |> validate_application
   end
 
@@ -142,7 +164,7 @@ defmodule ArduinoML do
   """
   def to_code! do
     case validate!() do
-      :ok -> get_application() |> CodeProducer.to_code
+      :ok -> application!() |> CodeProducer.to_code
       :error -> "// The structure presents defects. The code cannot be generated."
     end
   end
@@ -155,7 +177,7 @@ defmodule ArduinoML do
     |> IO.puts
   end
 
-  defp get_application do
+  def application! do
     Agent.get(__MODULE__, fn app -> app end)
   end
 

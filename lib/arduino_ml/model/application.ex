@@ -10,10 +10,21 @@ defmodule ArduinoML.Application do
     states: [],
     transitions: [],
     initial: nil,
-	delay: 0
+    delay: 0
 
   @doc """
   Adds a sensor to the given application.
+
+  Returns the updated application. The new sensor is enqueued to the sensors list.
+  
+  ## Examples
+  
+    iex> ArduinoML.Application.with_sensor(%ArduinoML.Application{}, %ArduinoML.Brick{label: :button, pin: 1})
+    %ArduinoML.Application{sensors: [%ArduinoML.Brick{label: :button, pin: 1}]}
+
+    iex> ArduinoML.Application.with_sensor(%ArduinoML.Application{sensors: [%ArduinoML.Brick{label: :button, pin: 1}]}, %ArduinoML.Brick{label: :sensor, pin: 2})
+    %ArduinoML.Application{sensors: [%ArduinoML.Brick{label: :sensor, pin: 2}, %ArduinoML.Brick{label: :button, pin: 1}]}
+
   """
   def with_sensor(app, sensor = %Brick{}) do
     %ArduinoML.Application{app | sensors: [sensor | app.sensors]}
@@ -21,6 +32,17 @@ defmodule ArduinoML.Application do
 
   @doc """
   Adds an actuator to the given application.
+
+  Returns the updated application. The new actuator is enqueued to the actuators list.
+  
+  ## Examples
+  
+    iex> ArduinoML.Application.with_actuator(%ArduinoML.Application{}, %ArduinoML.Brick{label: :led, pin: 1})
+    %ArduinoML.Application{actuators: [%ArduinoML.Brick{label: :led, pin: 1}]}
+
+    iex> ArduinoML.Application.with_actuator(%ArduinoML.Application{actuators: [%ArduinoML.Brick{label: :led, pin: 1}]}, %ArduinoML.Brick{label: :buzzer, pin: 2})
+    %ArduinoML.Application{actuators: [%ArduinoML.Brick{label: :buzzer, pin: 2}, %ArduinoML.Brick{label: :led, pin: 1}]}
+
   """
   def with_actuator(app, actuator = %Brick{}) do
     %ArduinoML.Application{app | actuators: [actuator | app.actuators]}
@@ -28,6 +50,17 @@ defmodule ArduinoML.Application do
 
   @doc """
   Adds a state to the given application.
+
+  Returns the updated application. The new state is enqueued to the states list.
+  
+  ## Examples
+  
+    iex> ArduinoML.Application.with_state(%ArduinoML.Application{}, %ArduinoML.State{label: :pressed})
+    %ArduinoML.Application{states: [%ArduinoML.State{label: :pressed}]}
+
+    iex> ArduinoML.Application.with_state(%ArduinoML.Application{states: [%ArduinoML.State{label: :pressed}]}, %ArduinoML.State{label: :released})
+    %ArduinoML.Application{states: [%ArduinoML.State{label: :released}, %ArduinoML.State{label: :pressed}]}
+
   """
   def with_state(app, state = %State{}) do
     %ArduinoML.Application{app | states: [state | app.states]}
@@ -35,6 +68,17 @@ defmodule ArduinoML.Application do
 
   @doc """
   Adds a transition to the given application.
+
+  Returns the updated application. The new transition is enqueued to the transitions list.
+  
+  ## Examples
+  
+    iex> ArduinoML.Application.with_transition(%ArduinoML.Application{}, %ArduinoML.Transition{to: :pressed})
+    %ArduinoML.Application{transitions: [%ArduinoML.Transition{to: :pressed}]}
+
+    iex> ArduinoML.Application.with_transition(%ArduinoML.Application{transitions: [%ArduinoML.Transition{to: :pressed}]}, %ArduinoML.Transition{to: :released})
+    %ArduinoML.Application{transitions: [%ArduinoML.Transition{to: :released}, %ArduinoML.Transition{to: :pressed}]}
+
   """
   def with_transition(app, transition = %Transition{}) do
     %ArduinoML.Application{app | transitions: [transition | app.transitions]}
@@ -42,13 +86,35 @@ defmodule ArduinoML.Application do
 
   @doc """
   Setup the initial state of the given application.
+
+  Returns the updated application. Overwrites the previous initial value if there is one.
+
+  ## Examples
+  
+    iex> ArduinoML.Application.with_initial(%ArduinoML.Application{}, :first)
+    %ArduinoML.Application{initial: :first}
+
+    iex> ArduinoML.Application.with_initial(%ArduinoML.Application{initial: :first}, :second)
+    %ArduinoML.Application{initial: :second}
+
   """
   def with_initial(app, label) do
     %ArduinoML.Application{app | initial: label}
   end
 
   @doc """
-  Setup the delay between each transition in the application.
+  Setup the delay (in milliseconds) between each transition in the application.
+
+  Returns the updated application. Overwrites the previous delay value if there is one.
+
+  ## Examples
+  
+    iex> ArduinoML.Application.with_delay(%ArduinoML.Application{}, 1)
+    %ArduinoML.Application{delay: 1}
+
+    iex> ArduinoML.Application.with_delay(%ArduinoML.Application{delay: 1}, 2)
+    %ArduinoML.Application{delay: 2}
+
   """
   def with_delay(app, delay) do
 	%ArduinoML.Application{app | delay: delay}
@@ -56,9 +122,18 @@ defmodule ArduinoML.Application do
       
   @doc """
   Returns the label of the initial state of the application.
+
+  ## Examples
+
+    iex> ArduinoML.Application.initial(%ArduinoML.Application{states: [%ArduinoML.State{label: :first}]})
+    :first
+
+    iex> ArduinoML.Application.initial(%ArduinoML.Application{initial: :second})
+    :second
+
   """
   def initial(app) when is_map(app) do
-	# See with_state/2, the first declared state is the last in the list.
+    # See with_state/2, the first declared state is the last in the list.
     app.initial || List.last(app.states).label
   end
   
