@@ -9,7 +9,8 @@ defmodule ArduinoML.Application do
     actuators: [],
     states: [],
     transitions: [],
-    initial: nil
+    initial: nil,
+	delay: 0
 
   @doc """
   Adds a sensor to the given application.
@@ -45,12 +46,20 @@ defmodule ArduinoML.Application do
   def with_initial(app, label) do
     %ArduinoML.Application{app | initial: label}
   end
-    
+
+  @doc """
+  Setup the delay between each transition in the application.
+  """
+  def with_delay(app, delay) do
+	%ArduinoML.Application{app | delay: delay}
+  end
+      
   @doc """
   Returns the label of the initial state of the application.
   """
   def initial(app) when is_map(app) do
-    app.initial || app.states[0].label
+	# See with_state/2, the first declared state is the last in the list.
+    app.initial || List.last(app.states).label
   end
   
 end
