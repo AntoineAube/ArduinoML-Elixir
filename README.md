@@ -95,7 +95,4 @@ void loop() {
 
 ## TODO List
 
-- Check the parameters validity.
-- Add documentation.
 - Implement more examples.
-- Add tests.
