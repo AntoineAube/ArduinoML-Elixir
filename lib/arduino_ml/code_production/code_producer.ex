@@ -73,16 +73,12 @@ defmodule ArduinoML.CodeProducer do
   defp condition_keyword(false), do: " else if"
   defp condition_keyword(true), do: "  if"
 
-  defp condition(%{sensor_label: label, signal: signal}) do
-    "digitalRead(#{brick_label(label)} == #{signal_label(signal)})"
-  end
-  
-  defp condition([]), do: "guard"
-  defp condition(assertions) do
-    assertions
-    |> Enum.map(fn %{sensor_label: label, signal: signal} ->
-      "digitalRead(" <> brick_label(label) <> ") == " <> signal_label (signal) end)
-    |> Enum.reduce(fn (sub, acc) -> acc <> " && " <> sub end)
+  defp comparison(:equals), do: "=="
+  defp comparison(:lower_than), do: "<"
+  defp comparison(:greater_than), do: ">"
+
+  defp condition(%{sensor_label: label, signal: signal, comparison: sign}) do
+    "digitalRead(#{brick_label(label)}) #{comparison(sign)} #{signal_label(signal)}"
   end
 
   defp loop_function(app) do
@@ -101,6 +97,7 @@ defmodule ArduinoML.CodeProducer do
  
   defp signal_label(label) when is_atom(label), do: label |> Atom.to_string |> String.upcase
   defp signal_label(label) when is_binary(label), do: String.upcase(label)
-
+  defp signal_label(label) when is_integer(label), do: Integer.to_string(label)
+  
   defp pin(value) when is_integer(value), do: Integer.to_string(value)
 end

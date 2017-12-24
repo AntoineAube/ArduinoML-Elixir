@@ -55,17 +55,29 @@ defmodule ArduinoMLTest do
   end
 
   test "Should build an assertion with the operator <~>" do
-    assert :button <~> :high == %ArduinoML.Assertion{sensor_label: :button, signal: :high}
+    assert :button <~> :high == %ArduinoML.Assertion{sensor_label: :button, signal: :high, comparison: :equals}
   end
 
   test "Should build an assertion verifying that the sensor is HIGH" do
-    assert is_high?(:button) == %ArduinoML.Assertion{sensor_label: :button, signal: :high}
+    assert is_high?(:button) == %ArduinoML.Assertion{sensor_label: :button, signal: :high, comparison: :equals}
   end
 
   test "Should build an assertion verifying that the sensor is LOW" do
-    assert is_low?(:button) == %ArduinoML.Assertion{sensor_label: :button, signal: :low}
+    assert is_low?(:button) == %ArduinoML.Assertion{sensor_label: :button, signal: :low, comparison: :equals}
   end
 
+  test "Should build an assertion verifying that the sensor is less than 2" do
+    assert :button < 2 == %ArduinoML.Assertion{sensor_label: :button, signal: 2, comparison: :lower_than}
+  end
+
+  test "Should build an assertion verifying that the sensor is greater than 2" do
+    assert :button > 2 == %ArduinoML.Assertion{sensor_label: :button, signal: 2, comparison: :greater_than}
+  end
+
+  test "Should build an assertion verifying that the sensor is at 2" do
+    assert :temperature <~> 2 == %ArduinoML.Assertion{sensor_label: :temperature, signal: 2, comparison: :equals}
+  end
+  
   test "Should build a list of two assertions with the 'and' operator" do
     given = is_low?(:button1) and is_high?(:button2)
 

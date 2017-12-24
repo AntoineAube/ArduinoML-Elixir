@@ -85,9 +85,7 @@ defmodule ArduinoML.ModelValidator do
       raise "An action used an unknown actuator (named: #{actuator_label})."
     end
 
-    if not signal in [:low, :high] do
-      raise "A signal must be either :low or :high (not: #{signal})."
-    end
+    validate_signal(signal)
 
     :ok
   end
@@ -113,11 +111,15 @@ defmodule ArduinoML.ModelValidator do
       raise "An assertion used an unknown sensor (named: #{sensor_label})."
     end
 
-    if not signal in [:low, :high] do
-      raise "A signal must be either :low or :high (not: #{signal})."
-    end
+    validate_signal(signal)
 
     :ok
   end
+
+  defp validate_signal(signal) when is_integer(signal), do: :ok
+  defp validate_signal(signal) when signal in [:low, :high], do: :ok
+  defp validate_signal(signal) do
+    raise "A signal must be either :low, :high, or an integer value (not: #{signal})."
+  end  
   
 end

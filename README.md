@@ -67,10 +67,10 @@ void state_pushed() {
 
   boolean guard = millis() - time > debounce;
 
-  if (digitalRead(BUTTON2 == LOW) && guard) {
+  if (digitalRead(BUTTON2) == LOW && guard) {
     time = millis();
     state_released();
-  } else if (digitalRead(BUTTON1 == LOW) && guard) {
+  } else if (digitalRead(BUTTON1) == LOW && guard) {
     time = millis();
     state_released();
   } else {
@@ -83,7 +83,7 @@ void state_released() {
 
   boolean guard = millis() - time > debounce;
 
-  if (digitalRead(BUTTON1 == HIGH) && digitalRead(BUTTON2 == HIGH) && guard) {
+  if (digitalRead(BUTTON1) == HIGH && digitalRead(BUTTON2) == HIGH && guard) {
     time = millis();
     state_pushed();
   } else {

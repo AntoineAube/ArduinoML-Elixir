@@ -13,13 +13,13 @@ defmodule ArduinoML do
   alias ArduinoML.Transition, as: Transition
   alias ArduinoML.CodeProducer, as: CodeProducer
 
-  import Kernel, except: [and: 2]
+  import Kernel, except: [and: 2, <: 2, >: 2]
 
   defmacro __using__(_opts) do
     quote do
       import ArduinoML
 
-      import Kernel, except: [and: 2]
+      import Kernel, except: [and: 2, <: 2, >: 2]
     end
   end
 
@@ -103,9 +103,23 @@ defmodule ArduinoML do
   Builds an assertion "is the sensor at the given signal?".
   """
   def sensor <~> signal do
-    %Assertion{sensor_label: sensor, signal: signal}
+    %Assertion{sensor_label: sensor, signal: signal, comparison: :equals}
   end
 
+  @doc """
+  Builds an assertion "is the sensor at lower signal than".
+  """
+  def sensor < signal do
+    %Assertion{sensor_label: sensor, signal: signal, comparison: :lower_than}
+  end
+
+  @doc """
+  Builds an assertion "is the sensor at greater signal than".
+  """
+  def sensor > signal do
+    %Assertion{sensor_label: sensor, signal: signal, comparison: :greater_than}
+  end
+  
   @doc """
   Builds an array of assertions from two assertions.
   """
