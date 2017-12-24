@@ -5,24 +5,12 @@ defmodule ArduinoML.Signal do
     ArduinoML.Brick.enhanced(signal, application.sensors)
   end
   
-  def digital?(:low, _), do: true
-  def digital?(:high, _), do: true
-  def digital?(%{type: type}, _), do: type == :digital
-  def digital?(signal, application) when (is_atom(signal) or is_binary(signal)) and not is_nil(signal) do
-    signal
-    |> ArduinoML.Signal.enhanced(application)
-    |> digital?(application)
-  end
-  def digital?(_, _), do: false
+  def digital?(:low), do: true
+  def digital?(:high), do: true
+  def digital?(%{type: type}), do: type == :digital
+  def digital?(_), do: false
 
-  def analogic?(:low, _), do: false
-  def analogic?(:high, _), do: false
-  def analogic?(nil, _), do: false
-  def analogic?(signal, application) when (is_atom(signal) or is_binary(signal)) and not is_nil(signal) do
-    signal
-    |> ArduinoML.Signal.enhanced(application)
-    |> analogic?(application)
-  end
-  def analogic?(signal, application), do: not digital?(signal, application)
+  def analogic?(%{type: type}), do: type == :analogic
+  def analogic?(signal), do: not digital?(signal)
 
 end

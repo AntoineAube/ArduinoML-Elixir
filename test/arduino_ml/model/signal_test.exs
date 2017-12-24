@@ -19,31 +19,23 @@ defmodule ArduinoML.SignalTest do
   end
 
   test "Should recognize a constant digital signal" do
-    assert ArduinoML.Signal.digital?(:low, %ArduinoML.Application{})
-    assert ArduinoML.Signal.digital?(:high, %ArduinoML.Application{})
-    assert not ArduinoML.Signal.digital?(1, %ArduinoML.Application{})
+    assert ArduinoML.Signal.digital?(:low)
+    assert ArduinoML.Signal.digital?(:high)
+    assert not ArduinoML.Signal.digital?(1)
   end
 
   test "Should recognize a variable digital signal" do
-    application = %ArduinoML.Application{sensors: [%ArduinoML.Brick{label: :button, pin: 1}]}
-
-    assert ArduinoML.Signal.digital?(:button, application)
-    assert ArduinoML.Signal.digital?(%ArduinoML.Brick{label: :button, pin: 1}, application)
-    assert not ArduinoML.Signal.digital?(:led, application)
+    assert ArduinoML.Signal.digital?(%ArduinoML.Brick{label: :button, pin: 1})
   end
   
   test "Should recognize a constant analogic signal" do
-    assert not ArduinoML.Signal.analogic?(:low, %ArduinoML.Application{})
-    assert not ArduinoML.Signal.analogic?(:high, %ArduinoML.Application{})
-    assert ArduinoML.Signal.analogic?(4, %ArduinoML.Application{})
+    assert not ArduinoML.Signal.analogic?(:low)
+    assert not ArduinoML.Signal.analogic?(:high)
+    assert ArduinoML.Signal.analogic?(4)
   end
 
   test "Should recognize a variable analogic signal" do
-    application = %ArduinoML.Application{sensors: [%ArduinoML.Brick{label: :temperature, pin: 1, type: :analogic}]}
-
-    assert ArduinoML.Signal.analogic?(:temperature, application)
-    assert ArduinoML.Signal.analogic?(%ArduinoML.Brick{label: :temperature, pin: 1, type: :analogic}, application)
-    assert not ArduinoML.Signal.analogic?(:led, application)
+    assert ArduinoML.Signal.analogic?(%ArduinoML.Brick{label: :temperature, pin: 1, type: :analogic})
   end
     
 end
