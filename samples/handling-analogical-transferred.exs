@@ -3,7 +3,7 @@ use ArduinoML
 application "Transfer analogical signal"
 
 sensor button: 9
-sensor temperature: 10
+sensor temperature: 10, type: :analogic
 actuator led: 12
 
 state :off, on_entry: :led ~> :low

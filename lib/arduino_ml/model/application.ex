@@ -117,5 +117,21 @@ defmodule ArduinoML.Application do
     # See with_state/2, the first declared state is the last in the list.
     app.initial || List.last(app.states).label
   end
-  
+
+  @doc """
+  Returns the states with all the bricks references replaced by their structures.
+  """
+  def enhanced_states(app) do
+    # TODO
+    app.states
+  end
+
+  @doc """
+  Returns the transitions with all the bricks references replaced by their structures.
+  """
+  def enhanced_transitions(app) do
+    # TODO
+    app.transitions
+  end
+      
 end

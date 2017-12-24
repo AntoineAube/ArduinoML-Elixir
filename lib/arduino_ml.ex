@@ -36,18 +36,26 @@ defmodule ArduinoML do
   Adds a sensor to the application.
   """
   def sensor([{label, pin}]) do
-    sensor = %Brick{label: label, pin: pin}
+    sensor([{label, pin}, type: :digital])
+  end
+
+  def sensor([{label, pin}, type: type]) when type in [:digital, :analogic] do
+    sensor = %Brick{label: label, pin: pin, type: type}
 
     Agent.update(__MODULE__, fn app -> Application.with_sensor(app, sensor) end)
 
     :ok
   end
-
+  
   @doc """
   Adds an actuator to the application.
   """
   def actuator([{label, pin}]) do
-    actuator = %Brick{label: label, pin: pin}
+    actuator([{label, pin}, type: :digital])
+  end
+
+  def actuator([{label, pin}, type: type]) when type in [:digital, :analogic] do
+    actuator = %Brick{label: label, pin: pin, type: type}
 
     Agent.update(__MODULE__, fn app -> Application.with_actuator(app, actuator) end)
 
