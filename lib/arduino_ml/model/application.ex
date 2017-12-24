@@ -113,27 +113,27 @@ defmodule ArduinoML.Application do
     :second
 
   """
-  def initial(app) when is_map(app) do
+  def initial(%{states: states, initial: initial}) do
     # See with_state/2, the first declared state is the last in the list.
-    app.initial || List.last(app.states).label
+    initial || List.last(states).label
   end
 
   @doc """
   Returns the states with all the bricks references replaced by their structures.
   Basically, it means that the actuators and signals of the actions are replaced.
   """
-  def enhanced_states(app) do
-    # TODO
-    app.states
+  def enhanced_states(application) do
+    application.states
+    |> Enum.map(fn state -> ArduinoML.State.enhanced(state, application) end)
   end
 
   @doc """
   Returns the transitions with all the bricks references replaced by their structures.
   Bascially, it means that the from, to and the sensors and signals of the transitions are replaced.
   """
-  def enhanced_transitions(app) do
-    # TODO
-    app.transitions
+  def enhanced_transitions(application) do
+    application.transitions
+    |> Enum.map(fn transition -> ArduinoML.Transition.enhanced(transition, application) end)
   end
       
 end
