@@ -78,7 +78,7 @@ defmodule ArduinoML.CodeProducer do
   defp comparison(:greater_than), do: ">"
 
   defp condition(%{sensor_label: label, signal: signal, comparison: sign}) do
-    "digitalRead(#{brick_label(label)}) #{comparison(sign)} #{signal_label(signal)}"
+    "#{signal_label(label)} #{comparison(sign)} #{signal_label(signal)}"
   end
 
   defp loop_function(app) do
@@ -95,9 +95,11 @@ defmodule ArduinoML.CodeProducer do
   defp brick_label(label) when is_atom(label), do: label |> Atom.to_string |> String.upcase
   defp brick_label(label) when is_binary(label), do: String.upcase(label)
  
-  defp signal_label(label) when is_atom(label), do: label |> Atom.to_string |> String.upcase
-  defp signal_label(label) when is_binary(label), do: String.upcase(label)
+  defp signal_label(label) when label in [:low, :high], do: label |> Atom.to_string |> String.upcase
   defp signal_label(label) when is_integer(label), do: Integer.to_string(label)
-  
+  defp signal_label(label) when is_atom(label) or is_binary(label) do
+    "digitalRead(#{brick_label(label)})"
+  end
+    
   defp pin(value) when is_integer(value), do: Integer.to_string(value)
 end

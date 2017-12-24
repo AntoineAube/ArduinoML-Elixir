@@ -100,6 +100,14 @@ defmodule ArduinoML do
   end
 
   @doc """
+  Builds an action "set the actuator to the value of the given sensor".
+  """
+  def actuator <~ sensor do
+    %Action{actuator_label: actuator, signal: sensor}
+  end
+  
+
+  @doc """
   Builds an assertion "is the sensor at the given signal?".
   """
   def sensor <~> signal do

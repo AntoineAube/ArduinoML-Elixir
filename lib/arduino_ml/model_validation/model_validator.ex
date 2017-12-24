@@ -41,19 +41,24 @@ defmodule ArduinoML.ModelValidator do
     end
   end
 
-  defp validate_state_machine(%{initial: initial, states: states, transitions: transitions, actuators: actuators, sensors: sensors}) do
+  defp validate_state_machine(%{initial: initial, states: states,
+				transitions: transitions, actuators: actuators, sensors: sensors}) do
     if Enum.empty?(states) do
       raise "No state has been declared."
     end
+
+    sensors_labels = Enum.map(sensors, &(&1.label))
+    actuators_labels = Enum.map(actuators, &(&1.label))
+    states_labels = Enum.map(states, &(&1.label))
 
     # Check the initial state existence.
     validate_initial(initial, states)
 
     # Check the validity of states and their actions.
-    validate_states(states, Enum.map(actuators, &(&1.label)))
+    validate_states(states, actuators_labels, sensors_labels)
 
     # Check the validity of transition and their assertions.
-    validate_transitions(transitions, Enum.map(sensors, &(&1.label)), Enum.map(states, &(&1.label)))
+    validate_transitions(transitions, sensors_labels, states_labels)
     
     :ok
   end
@@ -67,25 +72,25 @@ defmodule ArduinoML.ModelValidator do
     :ok
   end
 
-  defp validate_states([], _), do: :ok
-  defp validate_states([%{label: label, actions: actions} | others], actuators_labels) do
+  defp validate_states([], _, _), do: :ok
+  defp validate_states([%{label: label, actions: actions} | others], actuators_labels, sensors_labels) do
     # Check that the states label is uniq.
     if label in Enum.map(others, &(&1.label)) do
       raise "There cannot be multiple states named '#{label}'."
     end
 
     # Check that the actions are valid.
-    Enum.each(actions, fn action -> validate_action(action, actuators_labels) end)
+    Enum.each(actions, fn action -> validate_action(action, actuators_labels, sensors_labels) end)
 
-    validate_states(others, actuators_labels)
+    validate_states(others, actuators_labels, sensors_labels)
   end
 
-  defp validate_action(%{actuator_label: actuator_label, signal: signal}, actuators_labels) do
+  defp validate_action(%{actuator_label: actuator_label, signal: signal}, actuators_labels, sensors_labels) do
     if not actuator_label in actuators_labels do
       raise "An action used an unknown actuator (named: #{actuator_label})."
     end
 
-    validate_signal(signal)
+    validate_signal(signal, sensors_labels)
 
     :ok
   end
@@ -111,15 +116,21 @@ defmodule ArduinoML.ModelValidator do
       raise "An assertion used an unknown sensor (named: #{sensor_label})."
     end
 
-    validate_signal(signal)
+    validate_signal(signal, sensors_labels)
 
     :ok
   end
 
-  defp validate_signal(signal) when is_integer(signal), do: :ok
-  defp validate_signal(signal) when signal in [:low, :high], do: :ok
-  defp validate_signal(signal) do
-    raise "A signal must be either :low, :high, or an integer value (not: #{signal})."
-  end  
+  defp validate_signal(signal, _) when is_integer(signal), do: :ok
+  defp validate_signal(signal, sensors_labels) when is_list(sensors_labels) do
+    if signal in [:low, :high | sensors_labels] do 
+      :ok
+    else
+      validate_signal(signal, nil)
+    end
+  end
+  defp validate_signal(signal, _) do
+    raise "A signal must be either :low, :high, an existing sensor label or an integer value (not: #{signal})."
+  end
   
 end
