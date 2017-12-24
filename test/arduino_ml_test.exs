@@ -89,10 +89,5 @@ defmodule ArduinoMLTest do
 
     assert application!().transitions == [%ArduinoML.Transition{from: :on, to: :off, on: [is_high?(:button1), is_low?(:button2)]}]
   end
-
-  test "Should compute and set up the correct frequency" do
-    frequency 0.5, :herz
-
-    assert application!().delay == 2000
-  end
+  
 end
