@@ -13,6 +13,16 @@ defmodule ArduinoML do
   alias ArduinoML.Transition, as: Transition
   alias ArduinoML.CodeProducer, as: CodeProducer
 
+  import Kernel, except: [and: 2]
+
+  defmacro __using__(_opts) do
+    quote do
+      import ArduinoML
+
+      import Kernel, except: [and: 2]
+    end
+  end
+
   @doc """
   Initializes the application and names it.
   """
@@ -99,14 +109,14 @@ defmodule ArduinoML do
   @doc """
   Builds an array of assertions from two assertions.
   """
-  def (assertion = %Assertion{}) &&& (another_one = %Assertion{}) do
+  def (assertion = %Assertion{}) and (another_one = %Assertion{}) do
     [assertion, another_one]
   end
 
   @doc """
   Add an assertion to an existing array.
   """
-  def assertions &&& (assertion = %Assertion{}) when is_list(assertions) do
+  def assertions and (assertion = %Assertion{}) when is_list(assertions) do
     assertions ++ [assertion]
   end
     
@@ -161,11 +171,23 @@ defmodule ArduinoML do
   @doc """
   Translates and displays the described application.
   """
-  def finished! do
+  def finished!(), do: finished!(:show_me)
+  def finished!(:show_me) do
     to_code!()
     |> IO.puts
   end
 
+  @doc """
+  Translates and saves into the specified file.
+  """
+  def finished!(save_into: path) do
+    {:ok, file} = File.open(path, [:write])
+
+    IO.binwrite(file, to_code!())
+
+    File.close(file)
+  end
+  
   def application! do
     Agent.get(__MODULE__, &(&1))
   end
