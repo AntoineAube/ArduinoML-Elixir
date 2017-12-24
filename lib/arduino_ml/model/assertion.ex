@@ -1,3 +1,9 @@
 defmodule ArduinoML.Assertion do
-  defstruct sensor_label: nil, signal: nil, comparison: nil
+  defstruct sensor: nil, signal: nil, comparison: nil
+
+  def enhanced(assertion, app) do
+    # TODO
+    assertion
+  end
+  
 end

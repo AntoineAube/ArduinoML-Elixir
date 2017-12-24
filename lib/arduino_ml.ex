@@ -104,14 +104,14 @@ defmodule ArduinoML do
   Builds an action "set the actuator to the given signal".
   """
   def actuator ~> signal do
-    %Action{actuator_label: actuator, signal: signal}
+    %Action{actuator: actuator, signal: signal}
   end
 
   @doc """
   Builds an action "set the actuator to the value of the given sensor".
   """
   def actuator <~ sensor do
-    %Action{actuator_label: actuator, signal: sensor}
+    %Action{actuator: actuator, signal: sensor}
   end
   
 
@@ -119,21 +119,21 @@ defmodule ArduinoML do
   Builds an assertion "is the sensor at the given signal?".
   """
   def sensor <~> signal do
-    %Assertion{sensor_label: sensor, signal: signal, comparison: :equals}
+    %Assertion{sensor: sensor, signal: signal, comparison: :equals}
   end
 
   @doc """
   Builds an assertion "is the sensor at lower signal than".
   """
   def sensor < signal do
-    %Assertion{sensor_label: sensor, signal: signal, comparison: :lower_than}
+    %Assertion{sensor: sensor, signal: signal, comparison: :lower_than}
   end
 
   @doc """
   Builds an assertion "is the sensor at greater signal than".
   """
   def sensor > signal do
-    %Assertion{sensor_label: sensor, signal: signal, comparison: :greater_than}
+    %Assertion{sensor: sensor, signal: signal, comparison: :greater_than}
   end
   
   @doc """

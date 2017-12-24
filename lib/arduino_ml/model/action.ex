@@ -1,3 +1,9 @@
 defmodule ArduinoML.Action do
-  defstruct actuator_label: nil, signal: nil
+  defstruct actuator: nil, signal: nil
+
+  def enhanced(action, app) do
+    # TODO
+    action
+  end
+  
 end

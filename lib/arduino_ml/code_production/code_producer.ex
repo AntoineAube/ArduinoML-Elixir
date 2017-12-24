@@ -58,7 +58,7 @@ defmodule ArduinoML.CodeProducer do
     """
   end
 
-  defp action_declaration(%{actuator_label: label, signal: signal},
+  defp action_declaration(%{actuator: label, signal: signal},
                           %{actuators: actuators, sensors: sensors}) do
     type = Enum.find(actuators, fn %{label: actuator_label} -> actuator_label == label end).type
 
@@ -92,7 +92,7 @@ defmodule ArduinoML.CodeProducer do
   defp comparison(:lower_than), do: "<"
   defp comparison(:greater_than), do: ">"
 
-  defp condition(%{sensor_label: label, signal: signal, comparison: sign}, %{sensors: sensors}) do
+  defp condition(%{sensor: label, signal: signal, comparison: sign}, %{sensors: sensors}) do
     "#{signal_label(label, sensors)} #{comparison(sign)} #{signal_label(signal)}"
   end
 

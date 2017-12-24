@@ -120,6 +120,7 @@ defmodule ArduinoML.Application do
 
   @doc """
   Returns the states with all the bricks references replaced by their structures.
+  Basically, it means that the actuators and signals of the actions are replaced.
   """
   def enhanced_states(app) do
     # TODO
@@ -128,6 +129,7 @@ defmodule ArduinoML.Application do
 
   @doc """
   Returns the transitions with all the bricks references replaced by their structures.
+  Bascially, it means that the from, to and the sensors and signals of the transitions are replaced.
   """
   def enhanced_transitions(app) do
     # TODO

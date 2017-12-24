@@ -85,7 +85,7 @@ defmodule ArduinoML.ModelValidator do
     validate_states(others, actuators_labels, sensors_labels)
   end
 
-  defp validate_action(%{actuator_label: actuator_label, signal: signal}, actuators_labels, sensors_labels) do
+  defp validate_action(%{actuator: actuator_label, signal: signal}, actuators_labels, sensors_labels) do
     if not actuator_label in actuators_labels do
       raise "An action used an unknown actuator (named: #{actuator_label})."
     end
@@ -111,7 +111,7 @@ defmodule ArduinoML.ModelValidator do
     validate_transitions(others, sensors_labels, states_labels)
   end
 
-  defp validate_assertion(%{sensor_label: sensor_label, signal: signal}, sensors_labels) do
+  defp validate_assertion(%{sensor: sensor_label, signal: signal}, sensors_labels) do
     if not sensor_label in sensors_labels do
       raise "An assertion used an unknown sensor (named: #{sensor_label})."
     end
