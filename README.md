@@ -6,7 +6,7 @@ This directory is one quick implementation of ArduinoML in Elixir
 - An Elixir installation on your system.
 - *optional:* Compile the project with ```mix compile```.
 - *optional:* Execute the tests with ```mix test```.
-- Run it on a file with ```mix run FILE_PATH``` (example: ```mix run samples/switch.exs```).
+- Run it on a file with ```mix run FILE_PATH``` (example: ```mix run samples/dual_check_alarm.exs```).
 
 ## Project structure
 
@@ -17,7 +17,7 @@ This directory is one quick implementation of ArduinoML in Elixir
 
 ## Syntax example
 
-This example can be found in [samples/switch.exs](./samples/switch.exs).
+This example can be found in [samples/dual_check_alarm.exs](./samples/dual_check_alarm.exs).
 
 ```elixir
 use ArduinoML
