@@ -22,10 +22,7 @@ defmodule ArduinoML.CodeProducer do
     }
 
     // Static setup code.
-    int state = LOW;
-    int prev = HIGH;
-    long time = 0;
-    long debounce = 200;
+    int currentState = #{Application.state_position(application, application.initial.label)};
 
     // States declarations.
     #{application.states |> Enum.map(fn state -> state_function(state, application) end) |> Enum.join("\n")}
@@ -50,11 +47,7 @@ defmodule ArduinoML.CodeProducer do
     void #{state_function_name(state)}() {
     #{actions_lines}
     
-      boolean guard = millis() - time > debounce;
-    
-    #{transitions_declaration(relevant_transitions)} else {
-        #{state_function_name(state)}();
-      }
+    #{transitions_declaration(application, relevant_transitions)}
     }
     """
   end
@@ -64,21 +57,19 @@ defmodule ArduinoML.CodeProducer do
     "#{write_function(type)}(#{brick(label)}, #{signal(signal)});"
   end
   
-  defp transitions_declaration(transitions) do
-    transitions_declaration(transitions, true)
+  defp transitions_declaration(application, transitions) do
+    transitions_declaration(application, transitions, true)
   end
 
-  defp transitions_declaration([], _), do: ""
-  defp transitions_declaration([%{to: to, on: assertions} | others], is_first) do
+  defp transitions_declaration(_, [], _), do: ""
+  defp transitions_declaration(application, [%{to: to, on: assertions} | others], is_first) do
     condition = assertions
     |> Enum.map(&(condition(&1)))
-    |> Enum.concat(["guard"])
     |> Enum.join(" && ")
     
     "#{condition_keyword(is_first)} (#{condition}) {\n" <>
-    "    time = millis();\n" <>
-    "    #{state_function_name(to)}();\n" <>
-    "  }" <> transitions_declaration(others, false)
+    "    #{state_change(application, to)}\n" <>
+    "  }" <> transitions_declaration(application, others, false)
   end
   
   defp condition_keyword(false), do: " else if"
@@ -92,8 +83,17 @@ defmodule ArduinoML.CodeProducer do
 
   defp loop_function(application) do
     "void loop() {\n" <>
-    "  #{application |> Application.initial |> state_function_name}();\n" <>
+    "  #{loop_content(application, application.states)}\n" <>
     "}"
+  end
+
+  defp loop_content(_, []), do: "{\n    /* Not supposed to arrive here. */\n  }"
+  defp loop_content(application, [current_state | others]) do
+    position = Application.state_position(application, current_state.label)
+    state_call = state_function_name(current_state) <> "();"
+    "if (currentState == #{position}) {
+    #{state_call}
+  } else #{loop_content(application, others)}"
   end
   
   defp write_function(:digital), do: "digitalWrite"
@@ -117,4 +117,10 @@ defmodule ArduinoML.CodeProducer do
   end
     
   defp pin(value) when is_integer(value), do: Integer.to_string(value)
+
+  defp state_change(application = %Application{}, state = %ArduinoML.State{}) do
+    position = Application.state_position(application, state.label)
+    
+    "currentState = #{position};"
+  end
 end

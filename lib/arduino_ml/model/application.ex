@@ -11,6 +11,9 @@ defmodule ArduinoML.Application do
     transitions: [],
     initial: nil
 
+
+  def state_position(app, state_name), do: app.states |> Enum.find_index(&(&1.label == state_name))
+  
   @doc """
   Adds a sensor to the given application.
 
