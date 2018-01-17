@@ -4,9 +4,9 @@ application "Transfer analogical signal"
 
 sensor button: 9
 sensor temperature: 10, type: :analogic
-actuator led: 12
+actuator led: 12, type: :analogic
 
-state :off, on_entry: :led ~> :low
+state :off, on_entry: :led ~> 0
 state :on, on_entry: :led <~ :temperature
 
 transition from: :off, to: :on, when: is_high?(:button)

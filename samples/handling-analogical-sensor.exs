@@ -2,7 +2,7 @@ use ArduinoML
 
 application "Handling analogical sensor"
 
-sensor temperature: 9
+sensor temperature: 9, type: :analogic
 actuator alarm: 12
 
 state :normal, on_entry: :alarm ~> :low

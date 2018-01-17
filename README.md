@@ -50,51 +50,45 @@ int BUZZER = 12;
 
 // Setup the inputs and outputs.
 void setup() {
-  pinMode(BUTTON2, INPUT);  pinMode(BUTTON1, INPUT);
+  pinMode(BUTTON2, INPUT);
+  pinMode(BUTTON1, INPUT);
 
   pinMode(BUZZER, OUTPUT);
 }
 
 // Static setup code.
-int state = LOW;
-int prev = HIGH;
-long time = 0;
-long debounce = 200;
+int currentState = 1;
 
 // States declarations.
 void state_pushed() {
   digitalWrite(BUZZER, HIGH);
 
-  boolean guard = millis() - time > debounce;
-
-  if (digitalRead(BUTTON2) == LOW && guard) {
-    time = millis();
-    state_released();
-  } else if (digitalRead(BUTTON1) == LOW && guard) {
-    time = millis();
-    state_released();
-  } else {
-    state_pushed();
+  if (digitalRead(BUTTON2) == LOW) {
+    currentState = 1;
+  } else if (digitalRead(BUTTON1) == LOW) {
+    currentState = 1;
   }
 }
 
 void state_released() {
   digitalWrite(BUZZER, LOW);
 
-  boolean guard = millis() - time > debounce;
-
-  if (digitalRead(BUTTON1) == HIGH && digitalRead(BUTTON2) == HIGH && guard) {
-    time = millis();
-    state_pushed();
-  } else {
-    state_released();
+  if (digitalRead(BUTTON1) == HIGH && digitalRead(BUTTON2) == HIGH) {
+    currentState = 0;
   }
 }
 
 // This function specifies the first state.
 void loop() {
-  state_released();
+  if (currentState == 0) {
+    state_pushed();
+  } else if (currentState == 1) {
+    state_released();
+  } else {
+    /* Not supposed to arrive here. */
+  }
 }
+
 ```
 
 ## TODO List
